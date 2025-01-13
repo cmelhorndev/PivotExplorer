@@ -38,11 +38,14 @@ function handleAggListDrop(e, model){
   let agg_sel = makeAggregationSelectMenu();
   agg_sel.addEventListener("change", (ev) => {
       ev.preventDefault();
-      let agg_type = ev.target.value;
-      let col = ev.target.parentElement.querySelector("label").innerText;
-      let agg_cols = model.get("agg_columns");
-      agg_cols[col] = agg_type;
-      model.set("agg_columns", {} ); // reset agg columns to force serialization
+      let agg_list = ev.target.parentElement.parentElement;
+      let agg_cols = [];
+      for (const child of agg_list.children) {
+          let col = child.querySelector("label").innerText;
+          let agg_type = child.querySelector("select").value;
+          agg_cols.push([col, agg_type])
+      }
+      model.set("agg_columns", [] ); // reset agg columns to force serialization
       model.set("agg_columns", agg_cols);
       model.save_changes();
   });
@@ -53,8 +56,8 @@ function handleAggListDrop(e, model){
   e.target.appendChild(p);
 
   let agg_cols = model.get("agg_columns");
-  agg_cols[col] = agg_sel.value;
-  model.set("agg_columns", {} ); // reset agg columns to force serialization
+  agg_cols.push([col, agg_sel.value]);
+  model.set("agg_columns", [] ); // reset agg columns to force serialization
   model.set("agg_columns", agg_cols);
   model.save_changes();
   console.log(agg_cols);
@@ -108,7 +111,7 @@ function render({ model, el }) {
       grouping_list.replaceChildren();
       agg_list.replaceChildren();
       model.set("grouping_columns", [] );
-      model.set("agg_columns", {} );
+      model.set("agg_columns", [] );
       model.save_changes();
   });
   
