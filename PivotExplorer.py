@@ -15,6 +15,8 @@ class PivotSelectWidget(anywidget.AnyWidget):
 
     def __init__(self):
         super().__init__(layout=widgets.Layout(display='flex', align_items='stretch', width='35%'))
+        self.dgrid = None;
+        self.df = None;
         self.observe(self.on_grouping_change, names=["grouping_columns", "agg_columns"])
 
     def on_grouping_change(self, change):
@@ -43,8 +45,6 @@ class PivotSelectWidget(anywidget.AnyWidget):
     grouping_columns = traitlets.List().tag(sync=True) # Would prefer Set, but it causes TypeError: Set is not serializable
     agg_columns = traitlets.List().tag(sync=True)
 
-    dgrid = None;
-    df = None;
 
 
 def PivotExplorer(df):
